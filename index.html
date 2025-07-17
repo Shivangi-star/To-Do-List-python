@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI To-Do List</title>
+    <style>
+        body {
+            background-image: url('/static/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            color: #fff;
+            padding: 5vw;
+            margin: 0;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        form {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin: auto;
+            max-width: 600px;
+            box-shadow: 0 0 10px #333;
+        }
+
+        input, select, button {
+            padding: 10px;
+            margin: 8px 5px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            width: calc(100% - 20px);
+            max-width: 500px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+
+        .task {
+            background: rgba(19, 18, 18, 0.3);
+            color: #fff;
+            margin: 15px auto;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 600px;
+            font-size: 18px;
+            box-shadow: 0 0 8px #444;
+        }
+
+        .panda {
+            font-size: 24px;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        hr {
+            border: 1px solid #555;
+            margin: 40px 0;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <h1>🐼 AI To-Do List</h1>
+
+    {% if popup_message %}
+        <script>alert("{{ popup_message }}");</script>
+    {% endif %}
+
+    <form method="POST">
+        <input type="text" name="task" placeholder="Enter your task" required>
+        <input type="datetime-local" name="completion_time" required>
+        <select name="emoji">
+            <option value="📚">📚 Study</option>
+            <option value="💧">💧 Drink Water</option>
+            <option value="💻">💻 Code</option>
+            <option value="🧘">🧘 Yoga</option>
+            <option value="🍎">🍎 Eat Healthy</option>
+            <option value="🚴">🚴 Exercise</option>
+            <option value="📖">📖 Read</option>
+            <option value="🎧">🎧 Music</option>
+            <option value="🧑‍💻">🧑‍💻 Work</option>
+            <option value="🐼">🐼 Panda Time</option>
+        </select>
+        <button type="submit">Add Task</button>
+    </form>
+
+    <hr>
+
+    {% for task in tasks %}
+        <div class="task">
+            <p>{{ task['emoji'] }} <strong>{{ task['task'] }}</strong> - {{ task['time'] }}</p>
+
+            {% if task['completed'] %}
+                <span class="panda">🎉😊</span>
+            {% elif task['overdue'] %}
+                <span class="panda">😢🐼</span>
+            {% endif %}
+
+            {% if not task['completed'] %}
+            <form method="POST" action="/complete/{{ task['id'] }}">
+                <button type="submit">✅ Mark Completed</button>
+            </form>
+            {% endif %}
+        </div>
+    {% endfor %}
+</body>
+</html>
